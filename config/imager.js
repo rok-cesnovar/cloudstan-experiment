@@ -4,7 +4,7 @@
 
 module.exports = {
   variants: {
-    article: {
+    model: {
       resize: {
         detail: 'x440'
       },

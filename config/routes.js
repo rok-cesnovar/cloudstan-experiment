@@ -5,17 +5,14 @@
  */
 
 const users = require('../app/controllers/users');
-const articles = require('../app/controllers/articles');
-const comments = require('../app/controllers/comments');
-const tags = require('../app/controllers/tags');
+const models = require('../app/controllers/models');
 const auth = require('./middlewares/authorization');
 
 /**
  * Route middlewares
  */
 
-const articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
-const commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
+const modelAuth = [auth.requiresLogin, auth.model.hasAuthorization];
 
 const fail = {
   failureRedirect: '/login'
@@ -44,47 +41,32 @@ module.exports = function(app, passport) {
   app.get('/users/:userId', users.show);
   app.get('/auth/github', pauth('github', fail), users.signin);
   app.get('/auth/github/callback', pauth('github', fail), users.authCallback);
-  app.get(
-    '/auth/google',
-    pauth('google', {
-      failureRedirect: '/login',
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-      ]
-    }),
-    users.signin
-  );
-  app.get('/auth/google/callback', pauth('google', fail), users.authCallback);
-
+ 
   app.param('userId', users.load);
 
-  // article routes
-  app.param('id', articles.load);
-  app.get('/articles', articles.index);
-  app.get('/articles/new', auth.requiresLogin, articles.new);
-  app.post('/articles', auth.requiresLogin, articles.create);
-  app.get('/articles/:id', articles.show);
-  app.get('/articles/:id/edit', articleAuth, articles.edit);
-  app.put('/articles/:id', articleAuth, articles.update);
-  app.delete('/articles/:id', articleAuth, articles.destroy);
+  // model routes
+  app.param('id', models.load);
+  app.get('/models', auth.requiresLogin, models.index);
+  app.get('/models/new', auth.requiresLogin, models.new);
+  app.post('/models', auth.requiresLogin, models.create);
+  app.get('/models/:id', modelAuth, models.show);
+  app.get('/models/:id/code', modelAuth, models.get_code);
+  app.get('/models/:id/compile', modelAuth, models.compile);
+  app.post('/models/:id/code', modelAuth, models.save_code);
+  app.post('/models/:id/data', modelAuth, models.save_data);
+  app.get('/models/:id/fit', modelAuth, models.run_model);
+  app.get('/models/:id/edit', modelAuth, models.edit);
+  app.put('/models/:id', modelAuth, models.update);
+  app.delete('/models/:id', modelAuth, models.destroy);
 
   // home route
-  app.get('/', articles.index);
+  app.get('/', (req, res) => {
+    res.render('index', {
+      title: 'cloudstan'
+    });
+  });
 
-  // comment routes
-  app.param('commentId', comments.load);
-  app.post('/articles/:id/comments', auth.requiresLogin, comments.create);
-  app.get('/articles/:id/comments', auth.requiresLogin, comments.create);
-  app.delete(
-    '/articles/:id/comments/:commentId',
-    commentAuth,
-    comments.destroy
-  );
-
-  // tag routes
-  app.get('/tags/:tag', tags.index);
-
+  
   /**
    * Error handling
    */

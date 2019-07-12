@@ -1,0 +1,29 @@
+extends ../layouts/default
+
+block main
+  h1= title
+
+block content
+  - var action = '/models'
+  - action += model.isNew? '' : '/' + model.id
+
+  .row
+    .col-md-8
+      form(method="post", action=action, enctype="multipart/form-data", role="form")
+
+        input(type="hidden", name="_csrf", value=csrf_token)
+
+        - if (!model.isNew)
+          input(type="hidden", name="_method", value="PUT")
+
+        .form-group
+          label(for='title') Name
+          input.form-control#title(type='text', name="title", value=model.title, placeholder='Give your model a name')
+
+        .form-group
+          label(for='desc') Description
+          textarea.form-control#desc(rows="5", name="description", placeholder='Enter the optional model description. This might be useful for anyone you decide to share your model with.')=model.description
+        
+        button.btn.btn-primary(type='submit') Save
+        | &nbsp;
+        a.btn.btn-link(href='/models', title="cancel") Cancel

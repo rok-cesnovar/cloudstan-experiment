@@ -5,7 +5,7 @@
  */
 
 const mongoose = require('mongoose');
-const Article = mongoose.model('Article');
+const Model = mongoose.model('Model');
 const User = mongoose.model('User');
 const co = require('co');
 
@@ -19,7 +19,7 @@ const co = require('co');
 exports.cleanup = function(t) {
   co(function*() {
     yield User.deleteMany();
-    yield Article.deleteMany();
+    yield Model.deleteMany();
     t.end();
   });
 };

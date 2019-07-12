@@ -1,0 +1,76 @@
+extends ../layouts/default
+
+block main
+  h1= model.title.slice(0, 400)
+
+block content
+  .row
+    .col-md-8
+      p.text-muted= formatDate(model.createdAt, "%b %d, %Y at %I:%M %p")
+      p=model.description.slice(0, 1000)
+      .meta
+        //- if (model.user)
+          - var name = model.user.name ? model.user.name : model.user.username
+          p Author :&nbsp;
+            a(href="/users/"+model.user._id)= name
+
+        
+
+  form(action="/models/"+model.id, method="post", onsubmit="return confirm('Are you sure?')")
+    input(type='hidden', name='_csrf', value=csrf_token)
+    a.btn.btn-outline-primary(href='/models/'+model._id+'/edit', title="edit") Edit title and description
+    | &nbsp;
+    input(type="hidden", name="_method", value="DELETE")
+    button.btn.btn-outline-primary(type="submit") Delete model
+  br
+  form(method="post", action='/models/'+model._id+'/code')
+    input(type='hidden', name='_csrf', value=csrf_token)
+    input(type='hidden', name='model_id', value=model._id)
+    - if(model.compiled)   
+      input(type='hidden', name='compiled', value="1")
+    - else
+      input(type='hidden', name='compiled', value="0")
+    .form-group
+          label(for='desc')
+            h5#model_code Model code
+          p.messages#compile_messages 
+          button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_model") Save
+          - if(model.code.length > 0)      
+            - if(model.compiled)
+              button.btn.btn-outline-primary.inactive(type="button", id="compile_model", disabled) Compile
+              button.btn.btn-outline-primary(type="button", id="to_input") Go to data input
+            - else
+              button.btn.btn-outline-primary(type="button", id="compile_model") Compile
+              button.btn.btn-outline-primary.inactive(type="button", id="to_input", disabled) Go to data input
+          -else
+            button.btn.btn-outline-primary.inactive(type="button", disabled, id="compile_model") Compile
+            button.btn.btn-outline-primary.inactive(type="button", id="run_model", disabled) Go to data input
+          button.btn.btn-link.hidden(type="button", id="discard_model_code_changes") Discard unsaved changes
+          p 
+          textarea#codemirroreditor(rows="5", name="code", placeholder='Write your model code here and compile.')=model.code
+    - if(model.code.length > 0 && model.compiled)      
+      div#data_container
+        .form-group
+            label(for='desc')
+              h5#model_code Model data
+            p.messages#data_messages 
+            button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_data") Save
+            - if(model.data.length > 0)
+                button.btn.btn-outline-primary(type="button", id="run_model") Run model
+            - else
+                button.btn.btn-outline-primary.inactive(type="button", id="run_model", disabled) Run model
+            p 
+            textarea#dataeditor(rows="5", name="code", placeholder='Write your model data here and run.')=model.data
+    - else
+      div#data_container.hidden
+      .form-group
+          label(for='desc')
+            h5#model_code Model data
+          p.messages#data_messages 
+          button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_data") Save
+          - if(model.data.length > 0)
+              button.btn.btn-outline-primary(type="button", id="run_model") Run model
+          - else
+              button.btn.btn-outline-primary.inactive(type="button", id="run_model", disabled) Run model
+
+          textarea#dataeditor(rows="5", name="code", placeholder='Write your model data here and run.')=model.data

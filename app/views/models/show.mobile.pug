@@ -1,0 +1,20 @@
+extends ../layouts/default
+
+block main
+  h1= model.title.slice(0, 400)
+
+block content
+  .row
+    .col-md-8
+      p=model.description.slice(0, 1000)
+      .meta
+        - if (model.user)
+          - var name = model.user.name ? model.user.name : model.user.username
+          p Author :&nbsp;
+            a(href="/users/"+model.user._id)= name
+
+        p.text-muted= formatDate(model.createdAt, "%b %d, %Y at %I:%M %p")
+
+    .col-md-4
+      - if (!model.isNew && model.image && model.image.files && model.image.files.length)
+        img(src=model.image.cdnUri + '/mini_' + model.image.files[0])

@@ -1,0 +1,15 @@
+model.model
+  h3
+    a(href='/models/'+model._id, title=model.title) #{model.title.slice(0, 140)}
+  p= model.body.slice(0, 400)
+
+  .meta
+    span.text-muted= formatDate(model.createdAt)
+
+    - if (model.user)
+      | &nbsp; - &nbsp;
+      span Author &nbsp;
+
+      - var name = model.user.name ? model.user.name : model.user.username
+
+      a(href="/users/"+model.user._id)= name

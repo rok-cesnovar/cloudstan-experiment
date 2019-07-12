@@ -94,3 +94,72 @@ body {
     color: #777;
   }
 }
+
+
+/* Rok's coloring experiment. Dont judge */
+.bg-dark{
+  background-color: #b2001d !important;
+}
+
+.btn-primary {
+  background-color: #b2001d;
+  border-color: #590815;
+}
+
+.btn-primary:hover {
+  background-color: #590815;
+  border-color: #590815;
+}
+
+a {
+  color: #b2001d;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #b2001d;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(178, 0, 29, 0.25);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255,255,255,0.8);
+}
+
+.btn-link {
+  color: #b2001d
+}
+
+.btn-link:hover {
+  color: #590815;
+}
+.btn-outline-primary{
+  color: #b2001d;
+  border-color: #b2001d;
+}
+
+.btn-outline-primary:hover{
+  background-color:#b2001d;
+  border-color: #b2001d;
+}
+
+#code {
+  height: 450px;
+}
+
+.hidden {
+  display:none;
+}
+
+.inactive, .inactive:hover, .inactive:active, .inactive:focus, .inactive:disabled {
+  color: #666565;
+  border-color: #666565;
+  background-color:white;
+  cursor: default;  
+}
+
+.CodeMirror {
+  font-size: 18px;
+}
+

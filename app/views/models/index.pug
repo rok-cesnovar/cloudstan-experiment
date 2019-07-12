@@ -1,0 +1,13 @@
+extends ../layouts/default
+
+block main
+  h1 Your models
+
+block content
+  p
+  each model in models
+    h5 
+      a(href="/models/"+model._id, title=model.title)= model.title
+    p.text-secondary Created on 
+      span= formatDate(model.createdAt, "%b %d, %Y at %I:%M %p")
+    p= model.description
