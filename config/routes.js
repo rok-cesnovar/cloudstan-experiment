@@ -44,8 +44,6 @@ module.exports = function(app, passport) {
   app.get('/users/:userId', users.show);
   app.get('/auth/github', pauth('github', fail), users.signin);
   app.get('/auth/github/callback', pauth('github', fail), users.authCallback);
-  app.get('/auth/twitter', pauth('twitter', fail), users.signin);
-  app.get('/auth/twitter/callback', pauth('twitter', fail), users.authCallback);
   app.get(
     '/auth/google',
     pauth('google', {
@@ -58,19 +56,6 @@ module.exports = function(app, passport) {
     users.signin
   );
   app.get('/auth/google/callback', pauth('google', fail), users.authCallback);
-  app.get(
-    '/auth/linkedin',
-    pauth('linkedin', {
-      failureRedirect: '/login',
-      scope: ['r_emailaddress']
-    }),
-    users.signin
-  );
-  app.get(
-    '/auth/linkedin/callback',
-    pauth('linkedin', fail),
-    users.authCallback
-  );
 
   app.param('userId', users.load);
 

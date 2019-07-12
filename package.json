@@ -1,16 +1,9 @@
 {
-  "name": "nodejs-express-mongoose-demo",
-  "description": "A demo app illustrating the usage of express, mongoose, passportjs, pug and other modules in nodejs",
-  "keywords": [
-    "express",
-    "mongoose",
-    "mongodb",
-    "passport",
-    "demo"
-  ],
-  "version": "4.0.0",
+  "name": "rok-cloudstan-experiment",
+  "description": "An experiment on ",
+  "version": "1.0.0",
   "private": false,
-  "author": "Madhusudhan Srinivasa <madhums8@gmail.com> (http://madhums.github.com)",
+  "author": "Rok Cesnovar",
   "repository": {
     "type": "git",
     "url": "https://github.com/madhums/node-express-mongoose-demo.git"
@@ -49,9 +42,7 @@
     "passport": "~0.4.0",
     "passport-github": "~1.1.0",
     "passport-google-oauth": "~2.0.0",
-    "passport-linkedin": "~1.0.0",
     "passport-local": "~1.0.0",
-    "passport-twitter": "~1.0.4",
     "pm2": "~3.5.1",
     "pug": "~2.0.3",
     "ultimate-pagination": "~1.0.0",

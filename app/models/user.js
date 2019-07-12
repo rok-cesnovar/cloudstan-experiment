@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 
 const Schema = mongoose.Schema;
-const oAuthTypes = ['github', 'twitter', 'google', 'linkedin'];
+const oAuthTypes = ['github', 'google'];
 
 /**
  * User Schema
@@ -22,10 +22,8 @@ const UserSchema = new Schema({
   hashed_password: { type: String, default: '' },
   salt: { type: String, default: '' },
   authToken: { type: String, default: '' },
-  twitter: {},
   github: {},
-  google: {},
-  linkedin: {}
+  google: {}
 });
 
 const validatePresenceOf = value => value && value.length;
