@@ -34,12 +34,14 @@ const compile_model = (model, callback) => {
   });
 }
 
-const run_model = (model_name, model_data, callback) => {
+const run_model = (model_name, model_data, num_warmup, num_samples, callback) => {
   const sampling_function = "stan::services::sample::hmc_nuts_diag_e_adapt"
   const url = url_base + '/v1/'+model_name+'/fits';
   var postData = {
     function: sampling_function,
-    data: model_data
+    data: model_data,
+    num_warmup, 
+    num_samples
   }
   var options = {
     method: 'post',
@@ -113,7 +115,7 @@ const get_run_info = (fit_name, callback) => {
       }, undefined)
     }
     data = Buffer.from(body)
-    protobuf.load("./httpstan/callbacks_writer.proto", function(err, root) {
+    protobuf.load("./app/httpstan/callbacks_writer.proto", function(err, root) {
       if (err)
           throw err;
       let writer = root.lookupType("stan.WriterMessage");
@@ -151,7 +153,7 @@ const get_run_info = (fit_name, callback) => {
           }else if(object.topic === "LOGGER"){
               object.feature.forEach(element => {
                   if(element.stringList) {
-                      logger += element.stringList.value[0]+"\n"
+                      logger += element.stringList.value[0]+"<br/>"
                   }                    
               });
           }else if(object.topic === "DIAGNOSTIC"){

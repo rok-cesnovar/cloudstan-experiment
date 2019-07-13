@@ -54,7 +54,8 @@ module.exports = function(app, passport) {
   app.get('/models/:id/compile', modelAuth, models.compile);
   app.post('/models/:id/code', modelAuth, models.save_code);
   app.post('/models/:id/data', modelAuth, models.save_data);
-  app.get('/models/:id/fit', modelAuth, models.run_model);
+  app.post('/models/:id/fit', modelAuth, models.run_model);
+  app.get('/models/:id/fit', modelAuth, models.get_fit);
   app.get('/models/:id/edit', modelAuth, models.edit);
   app.put('/models/:id', modelAuth, models.update);
   app.delete('/models/:id', modelAuth, models.destroy);

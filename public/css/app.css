@@ -3,6 +3,7 @@
 
 body {
   padding-top: 6rem;
+  height: 100%;
 }
 
 /* floating labels */
@@ -98,7 +99,7 @@ body {
 
 /* Rok's coloring experiment. Dont judge */
 .bg-dark{
-  background-color: #b2001d !important;
+  background-color: #3c3c3c !important;
 }
 
 .btn-primary {
@@ -161,5 +162,48 @@ a {
 
 .CodeMirror {
   font-size: 18px;
+  border-radius: 9px;
 }
 
+#model_run_log{
+  height: 400px;
+  min-height: 100%;
+  border: 1px grey solid;
+  border-radius: 10px;
+  padding: 10px;
+  scroll-behavior: auto;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#anchor-name{
+  position: absolute;
+  top: -100px;
+  left: 0;
+}
+
+#logo-navbar{
+  margin-right:5px;
+}
+
+#num_sampling{
+  width:30%;
+}
+
+#num_warmup{
+  width:30%;
+}
+#sampling_logger {
+  height: 250px;
+  overflow-y: auto;
+}
+#sampling_logger_holder{
+  border: 1px solid #b2001d;
+  border-radius: 5pt;
+  padding-left: 5pt;
+  padding-top: 5pt;
+  padding-bottom: 5pt;
+  overflow: hidden;
+}

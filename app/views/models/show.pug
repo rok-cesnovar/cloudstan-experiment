@@ -52,25 +52,37 @@ block content
       div#data_container
         .form-group
             label(for='desc')
-              h5#model_code Model data
+              h5#model_data Model data
             p.messages#data_messages 
             button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_data") Save
-            - if(model.data.length > 0)
-                button.btn.btn-outline-primary(type="button", id="run_model") Run model
-            - else
-                button.btn.btn-outline-primary.inactive(type="button", id="run_model", disabled) Run model
             p 
             textarea#dataeditor(rows="5", name="code", placeholder='Write your model data here and run.')=model.data
     - else
       div#data_container.hidden
       .form-group
           label(for='desc')
-            h5#model_code Model data
+            h5#model_data Data input
           p.messages#data_messages 
           button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_data") Save
-          - if(model.data.length > 0)
-              button.btn.btn-outline-primary(type="button", id="run_model") Run model
-          - else
-              button.btn.btn-outline-primary.inactive(type="button", id="run_model", disabled) Run model
+  h4#model_run_title Fit the model
+  .row
+    .col-md-8
+      p.messages#fit_messages
+        .form-group
+          label(for='title') Warmup iterations
+          | &nbsp;
+          input.form-control#num_warmup(type='text', name="num_warmup", value=model.fitWarmup)
 
-          textarea#dataeditor(rows="5", name="code", placeholder='Write your model data here and run.')=model.data
+        .form-group
+          label(for='desc') Sampling iterations
+          | &nbsp;
+          input.form-control#num_samples(type='text', name="num_samples", value=model.fitSampling)
+        
+        button.btn.btn-outline-primary(type='button', id="start_sampling") Start sampling
+  h5 Sampling log output
+  div#sampling_logger_holder
+    div#sampling_logger
+    -if(model.fitStarted)
+      input(type="hidden", id="check_sampling", value="1")
+
+  

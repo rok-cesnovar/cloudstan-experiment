@@ -20,9 +20,14 @@ const ModelSchema = new Schema({
   user: { type: Schema.ObjectId, ref: 'User' },
   compiled: { type: Boolean, default: false },
   fitCompleted: { type: Boolean, default: false },
+  fitStarted: { type: Boolean, default: false },
   modelHttpStanId: {type: String, default: '' },
   fitHttpStanId: {type: String, default: '' },
   operationHttpStanId: {type: String, default: '' },
+  fitResult: {type: String, default: '' },
+  fitWarmup:  {type: Number, default: 1000 },
+  fitSampling:  {type: Number, default: 1000 },
+  fitFunction: {type: Number, default: 0},
   createdAt: { type: Date, default: Date.now }
 });
 

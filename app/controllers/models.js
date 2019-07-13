@@ -211,17 +211,38 @@ exports.save_data = async(function*(req, res) {
 
 exports.run_model = async(function*(req, res) {
   const model = req.model;
+  //save to the database
+  var fitSampling;
+  var fitWarmup
+  if(!req.body.num_samples){
+    fitSampling = 1000;
+  }else{
+    fitSampling = parseInt(req.body.num_samples);
+  }
+
+  if(!req.body.num_warmup){
+    fitWarmup = 1000;
+  }else{
+    fitWarmup = parseInt(req.body.num_warmup);
+  }
+    
+  assign(model, only({fitSampling , fitWarmup}, 'fitSampling fitWarmup'));
+  try {
+    yield model.uploadAndSave(req.file);
+    console.log("dadadada")
+  } catch (err) {
+  }
   try {
     // send to compile
-    httpstan.run_model(model.modelHttpStanId, JSON.parse(model.data), (error, data) => {
+    httpstan.run_model(model.modelHttpStanId, JSON.parse(model.data), fitWarmup, fitSampling, (error, data) => {
       if(error){
         if(error.message){
           error.message = error.message.replace(/(?:\r\n|\r|\n)/g, '<br>');
         }
         return res.send(error);
       }
-      assign(model, only({fitHttpStanId: data.fit_name, operationHttpStanId: data.operation_name, fitCompleted: false},
-                  'fitHttpStanId operationHttpStanId fitCompleted'));
+      assign(model, only({fitHttpStanId: data.fit_name, operationHttpStanId: data.operation_name, fitCompleted: false, fitStarted: true},
+                  'fitHttpStanId operationHttpStanId fitCompleted fitStarted'));
       try {
         model.uploadAndSave(req.file);
       } catch (err) {
@@ -233,3 +254,22 @@ exports.run_model = async(function*(req, res) {
     res.status(422);
   }
 });
+
+exports.get_fit = async(function*(req, res) {
+  const model = req.model;
+  try {
+    httpstan.operation_progress(model.operationHttpStanId, (error, data) => {
+      if(data.done==true){
+        httpstan.get_run_info(model.fitHttpStanId, (error, data) => {
+          res.send(data)
+        });
+      }else{
+        res.send(data)
+      }
+    });
+  } catch (err) {
+    res.status(422);
+  }
+});
+
+

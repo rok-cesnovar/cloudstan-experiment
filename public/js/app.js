@@ -1,4 +1,25 @@
 $(document).ready(function () {
+    function check_sampling(){
+        const model_id = $('input[name=model_id]').val();
+        const _csrf = $('input[name=_csrf]').val();
+        const params = { _csrf };
+        $.get("/models/"+model_id+"/fit", params, (data) => {            
+            if(data.error){
+                if(data.message){
+                    flash_message_fit("danger", data.error+"<br/>"+data.message);
+                }else{
+                    flash_message_fit("danger", data.error);
+                }
+            }else{
+                $("#sampling_logger").html(data.logger.replace("\n"));
+                $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
+                enable_button("start_sampling");
+            }            
+        })
+        .fail(function() {
+            flash_message_fit("danger", "Could not run the model!");
+        }) 
+    }
     function clear_flash_message(){
         $(".messages").empty();
         $("#compile_messages").empty();
@@ -27,6 +48,17 @@ $(document).ready(function () {
     function flash_message_data(type, msg){
         $("#data_messages").append("<div class=\"fade show alert alert-"+type+"\"><button class=\"close\" type=\"button\" data-dismiss=\"alert\">×</button>"+msg+"</div>");
     }
+
+    function flash_message_fit(type, msg){
+        $("#fit_messages").append("<div class=\"fade show alert alert-"+type+"\"><button class=\"close\" type=\"button\" data-dismiss=\"alert\">×</button>"+msg+"</div>");
+    }
+
+    $("#to_input").click(() => {
+        const offset = $("nav").height()+parseInt($("nav").css("padding-bottom"))+parseInt($("nav").css("padding-top"));
+        $('html, body').animate({
+            scrollTop: $("#model_data").offset().top-offset-5
+        }, 10);
+    });
 
     $("#save_model").click(() => {
         clear_flash_message();
@@ -113,34 +145,25 @@ $(document).ready(function () {
         });
     });
 
-    
-    $("#run_model").click(() => {
+    $("#start_sampling").click(() => {
         const model_id = $('input[name=model_id]').val();
         const _csrf = $('input[name=_csrf]').val();
-        const params = { _csrf };
-        disable_button("save_data");
-        disable_button("run_model");
-        clear_flash_message();
-        flash_message_data("info", "Running the model with the input data. Please wait...");  
-        $.get("/models/"+model_id+"/fit", params, (data) => {            
+        const num_warmup = $('input[name=num_warmup]').val();
+        const num_samples = $('input[name=num_samples]').val();
+        const params = { _csrf, num_warmup, num_samples };
+        $.post("/models/"+model_id+"/fit", params, (data) => {            
             if(data.error){
                 if(data.message){
                     flash_message_model("danger", data.error+"<br/>"+data.message);
                 }else{
                     flash_message_model("danger", data.error);
-                }                
-                disable_button("save_data");
-                enable_button("run_model");
+                }
             }else{
-                clear_flash_message();
-                flash_message_model("success", "The model has completed succesfully."+JSON.stringify(data));
-                disable_button("save_data");
-                disable_button("run_model");
+                flash_message_model("success", JSON.stringify(data));
+                disable_button("start_sampling");
             }            
         })
-        .fail(function() {            
-            disable_button("save_data");
-            enable_button("run_model");
+        .fail(function() {
             flash_message_model("danger", "Could not run the model!");
         })
     });
@@ -191,4 +214,12 @@ $(document).ready(function () {
         disable_button("run_model");
         clear_flash_message();
     });
+
+    if($("#check_sampling")){
+        if($("#check_sampling").val()==1){
+            check_sampling();
+        }    
+    }
+
+    
 });
