@@ -207,3 +207,7 @@ html {
   padding-bottom: 5pt;
   overflow: hidden;
 }
+
+.bar-chart {  
+  background-color: #C7D9D9;  
+}

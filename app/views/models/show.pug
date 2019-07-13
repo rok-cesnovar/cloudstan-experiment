@@ -84,5 +84,8 @@ block content
     div#sampling_logger
     -if(model.fitStarted)
       input(type="hidden", id="check_sampling", value="1")
-
-  
+  br
+  h5 Visualization
+  <canvas id="myChart"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  script(src="/js/charts.js")

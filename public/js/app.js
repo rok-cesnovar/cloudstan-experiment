@@ -14,6 +14,27 @@ $(document).ready(function () {
                 $("#sampling_logger").html(data.logger.replace("\n"));
                 $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
                 enable_button("start_sampling");
+                
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'bar',
+
+                    // The data for our dataset
+                    data: {
+                        labels: [...Array(data.samples.theta.length).keys()],
+                        datasets: [{
+                            label: 'theta',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: data.samples.theta
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+
             }            
         })
         .fail(function() {
