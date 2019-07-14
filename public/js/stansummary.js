@@ -97,10 +97,16 @@ function visualize(data){
     var min = undefined
     var max = undefined
     var sel = $("<select>", {id: "param_"}).addClass("form-control").css("width","40%");
+    var selected = false;
     for(key in data){
         if(next==1){
             keys.push(key)
-            var opt = $("<option>").attr("value",key).html(key)
+            if(!selected){
+                var opt = $("<option>").attr("value",key).html(key).attr("selected", "true")
+            }else{
+                var opt = $("<option>").attr("value",key).html(key)
+            }
+            
             sel.append(opt)
         }
         if(key==="energy__"){
