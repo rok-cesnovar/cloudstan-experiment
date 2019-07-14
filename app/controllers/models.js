@@ -261,6 +261,7 @@ exports.get_fit = async(function*(req, res) {
     httpstan.operation_progress(model.operationHttpStanId, (error, data) => {
       if(data.done==true){
         httpstan.get_run_info(model.fitHttpStanId, (error, data) => {
+          data.done=true
           res.send(data)
         });
       }else{

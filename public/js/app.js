@@ -1,8 +1,19 @@
 $(document).ready(function () {
+    function slide_to(name,off){
+        const offset = $("nav").height()+parseInt($("nav").css("padding-bottom"))+parseInt($("nav").css("padding-top"));
+        $('html, body').animate({
+            scrollTop: $(name).offset().top-offset-off
+        }, 100);
+    }
+    sampling_check_timer = 100
     function check_sampling(){
         const model_id = $('input[name=model_id]').val();
         const _csrf = $('input[name=_csrf]').val();
         const params = { _csrf };
+        if(sampling_check_timer<2){
+            sampling_check_timer*=1.5
+        }
+        //this should probably be a socket
         $.get("/models/"+model_id+"/fit", params, (data) => {            
             if(data.error){
                 if(data.message){
@@ -11,35 +22,25 @@ $(document).ready(function () {
                     flash_message_fit("danger", data.error);
                 }
             }else{
-                $("#sampling_logger").html(data.logger.replace("\n"));
-                $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
-                enable_button("start_sampling");
-                
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var chart = new Chart(ctx, {
-                    // The type of chart we want to create
-                    type: 'bar',
-
-                    // The data for our dataset
-                    data: {
-                        labels: [...Array(data.samples.theta.length).keys()],
-                        datasets: [{
-                            label: 'theta',
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: data.samples.theta
-                        }]
-                    },
-
-                    // Configuration options go here
-                    options: {}
-                });
-
+                if(data.done==true){                    
+                    enable_button("start_sampling");
+                    $("#sampling_logger").empty();
+                    $("#sampling_logger").append(data.logger.replace("\n"));
+                    $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
+                    stansummaryTable(data);
+                    sampling_data = data.samples
+                    visualize(data.samples)
+                    //setTimeout(slide_to("#summary_div",0),100)
+                }else{
+                    $("#sampling_logger").append("<br/>"+data.progress);
+                    $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
+                    setTimeout(check_sampling, sampling_check_timer)
+                }
             }            
         })
         .fail(function() {
             flash_message_fit("danger", "Could not run the model!");
-        }) 
+        })           
     }
     function clear_flash_message(){
         $(".messages").empty();
@@ -172,6 +173,9 @@ $(document).ready(function () {
         const num_warmup = $('input[name=num_warmup]').val();
         const num_samples = $('input[name=num_samples]').val();
         const params = { _csrf, num_warmup, num_samples };
+        $("#summary_div").slideUp();
+        $("#sampling_logger").empty().append("Sampling started...");
+        sampling_check_timer = 100
         $.post("/models/"+model_id+"/fit", params, (data) => {            
             if(data.error){
                 if(data.message){
@@ -180,8 +184,8 @@ $(document).ready(function () {
                     flash_message_model("danger", data.error);
                 }
             }else{
-                flash_message_model("success", JSON.stringify(data));
                 disable_button("start_sampling");
+                setTimeout(check_sampling, sampling_check_timer)
             }            
         })
         .fail(function() {

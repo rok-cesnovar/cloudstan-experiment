@@ -16,7 +16,7 @@ const ModelSchema = new Schema({
   title: { type: String, default: '', trim: true, maxlength: 400 },
   description: { type: String, default: '', trim: true, maxlength: 1000 },
   code: { type: String, default: '', trim: true, maxlength: 6000 },
-  data: { type: String, default: '', trim: true, maxlength: 6000 },
+  data: { type: String, default: '', trim: true, maxlength: 50000 },
   user: { type: Schema.ObjectId, ref: 'User' },
   compiled: { type: Boolean, default: false },
   fitCompleted: { type: Boolean, default: false },

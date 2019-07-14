@@ -104,6 +104,8 @@ const get_run_info = (fit_name, callback) => {
     url: url
   }
   request(options, function (err, res, body) {
+    console.log(err)
+    console.log(body)
     if (err) {
       return callback({
         error: 'The httpstan instance is not reachable!'
@@ -130,45 +132,49 @@ const get_run_info = (fit_name, callback) => {
           i+=num
           to_parse = data.slice(i, i+len)
           i+=len
-          let message = writer.decode(to_parse);            
-          var object = writer.toObject(message, {
-              enums: String,  // enums as string names
-              longs: String,  // longs as strings (requires long.js)
-              bytes: String,  // bytes as base64 encoded strings
-              defaults: true, // includes default values
-              arrays: true,   // populates empty arrays (repeated fields) even if defaults=false
-              objects: true,  // populates empty objects (map fields) even if defaults=false
-              oneofs: true    // includes virtual oneof fields set to the present field's name
-          });
+          try{
+            let message = writer.decode(to_parse);            
+            var object = writer.toObject(message, {
+                enums: String,  // enums as string names
+                longs: String,  // longs as strings (requires long.js)
+                bytes: String,  // bytes as base64 encoded strings
+                defaults: true, // includes default values
+                arrays: true,   // populates empty arrays (repeated fields) even if defaults=false
+                objects: true,  // populates empty objects (map fields) even if defaults=false
+                oneofs: true    // includes virtual oneof fields set to the present field's name
+            });
 
-          if(object.topic === "SAMPLE"){
-              object.feature.forEach(element => {
-                  if(element.doubleList && element.name.length>0) {
-                      if(!samples[element.name]){
-                          samples[element.name] = []
-                      }                        
-                      samples[element.name].push(element.doubleList.value[0])
-                  }                    
-              });
-          }else if(object.topic === "LOGGER"){
-              object.feature.forEach(element => {
-                  if(element.stringList) {
-                      logger += element.stringList.value[0]+"<br/>"
-                  }                    
-              });
-          }else if(object.topic === "DIAGNOSTIC"){
-              object.feature.forEach(element => {
-                  if(element.doubleList && element.name.length>0) {
-                      if(!diagnostic[element.name]){
-                          diagnostic[element.name] = []
-                      }                        
-                      diagnostic[element.name].push(element.doubleList.value[0])
-                  }                    
-              });
-          }else{
-              //Ignoring intialization for now
-              //console.log(object)
-          }            
+            if(object.topic === "SAMPLE"){
+                object.feature.forEach(element => {
+                    if(element.doubleList && element.name.length>0) {
+                        if(!samples[element.name]){
+                            samples[element.name] = []
+                        }                        
+                        samples[element.name].push(element.doubleList.value[0])
+                    }                    
+                });
+            }else if(object.topic === "LOGGER"){
+                object.feature.forEach(element => {
+                    if(element.stringList) {
+                        logger += element.stringList.value[0]+"<br/>"
+                    }                    
+                });
+            }else if(object.topic === "DIAGNOSTIC"){
+                object.feature.forEach(element => {
+                    if(element.doubleList && element.name.length>0) {
+                        if(!diagnostic[element.name]){
+                            diagnostic[element.name] = []
+                        }                        
+                        diagnostic[element.name].push(element.doubleList.value[0])
+                    }                    
+                });
+            }else{
+                //Ignoring intialization for now
+                //console.log(object)
+            }
+          }catch(err){
+            break;
+          }         
       }
       callback(undefined, {logger, samples, diagnostic})
     });

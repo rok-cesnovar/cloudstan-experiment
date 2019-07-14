@@ -188,7 +188,7 @@ html {
   margin-right:5px;
 }
 
-#num_sampling{
+#num_samples{
   width:30%;
 }
 
@@ -210,4 +210,8 @@ html {
 
 .bar-chart {  
   background-color: #C7D9D9;  
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(178, 0, 29,.2);
 }
