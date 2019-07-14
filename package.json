@@ -46,6 +46,7 @@
     "pm2": "~3.5.1",
     "protobufjs": "^6.8.8",
     "pug": "~2.0.3",
+    "request": "^2.88.0",
     "ultimate-pagination": "~1.0.0",
     "varint": "^5.0.0",
     "view-helpers": "~0.2.0",
