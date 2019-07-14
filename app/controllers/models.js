@@ -229,7 +229,6 @@ exports.run_model = async(function*(req, res) {
   assign(model, only({fitSampling , fitWarmup}, 'fitSampling fitWarmup'));
   try {
     yield model.uploadAndSave(req.file);
-    console.log("dadadada")
   } catch (err) {
   }
   try {
@@ -251,7 +250,7 @@ exports.run_model = async(function*(req, res) {
       return res.send(data.fit_name);
     });
   } catch (err) {
-    res.status(422);
+    res.send("error");
   }
 });
 
@@ -259,13 +258,13 @@ exports.get_fit = async(function*(req, res) {
   const model = req.model;
   try {
     httpstan.operation_progress(model.operationHttpStanId, (error, data) => {
-      if(data.done==true){
+      if(data && data.done && data.done==true){
         httpstan.get_run_info(model.fitHttpStanId, (error, data) => {
           data.done=true
           res.send(data)
         });
       }else{
-        res.send(data)
+        res.send(error)
       }
     });
   } catch (err) {

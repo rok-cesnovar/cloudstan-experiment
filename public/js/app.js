@@ -16,17 +16,16 @@ $(document).ready(function () {
         //this should probably be a socket
         $.get("/models/"+model_id+"/fit", params, (data) => {            
             if(data.error){
-                if(data.message){
-                    flash_message_fit("danger", data.error+"<br/>"+data.message);
-                }else{
-                    flash_message_fit("danger", data.error);
-                }
+                enable_button("start_sampling");
+                $("#sampling_logger").append("ERROR: <br>").append(data.error+"<br/>"+data.message);
             }else{
-                if(data.done==true){                    
+                if(data.done==true){      
+                    console.log(data)              
                     enable_button("start_sampling");
                     $("#sampling_logger").empty();
                     $("#sampling_logger").append(data.logger.replace("\n"));
                     $("#sampling_logger").scrollTop($("#sampling_logger")[0].scrollHeight);
+                    $("#param_select").empty();
                     stansummaryTable(data);
                     sampling_data = data.samples
                     visualize(data.samples)
@@ -38,8 +37,9 @@ $(document).ready(function () {
                 }
             }            
         })
-        .fail(function() {
-            flash_message_fit("danger", "Could not run the model!");
+        .fail(function(jqXHR, textStatus, errorThrows) {
+            enable_button("start_sampling");
+            $("#sampling_logger").append("ERROR: <br>").append(err);            
         })           
     }
     function clear_flash_message(){
@@ -178,18 +178,16 @@ $(document).ready(function () {
         sampling_check_timer = 100
         $.post("/models/"+model_id+"/fit", params, (data) => {            
             if(data.error){
-                if(data.message){
-                    flash_message_model("danger", data.error+"<br/>"+data.message);
-                }else{
-                    flash_message_model("danger", data.error);
-                }
+                enable_button("start_sampling");
+                $("#sampling_logger").append("ERROR: <br>").append(data.error).append(data.message);
             }else{
                 disable_button("start_sampling");
                 setTimeout(check_sampling, sampling_check_timer)
             }            
         })
         .fail(function() {
-            flash_message_model("danger", "Could not run the model!");
+            enable_button("start_sampling");
+            $("#sampling_logger").append("ERROR: <br>").append(err);
         })
     });
     $("#save_data").click(() => {

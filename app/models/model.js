@@ -24,7 +24,6 @@ const ModelSchema = new Schema({
   modelHttpStanId: {type: String, default: '' },
   fitHttpStanId: {type: String, default: '' },
   operationHttpStanId: {type: String, default: '' },
-  fitResult: {type: String, default: '' },
   fitWarmup:  {type: Number, default: 1000 },
   fitSampling:  {type: Number, default: 1000 },
   fitFunction: {type: Number, default: 0},

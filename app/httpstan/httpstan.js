@@ -3,7 +3,7 @@ const fs = require('fs')
 var protobuf = require("protobufjs");
 var varint = require("varint")
 
-const url_base = 'http://localhost:8080'
+const url_base = process.env.HTTPSTAN_URL
 
 const compile_model = (model, callback) => {
   const url = url_base + '/v1/models';
@@ -88,11 +88,15 @@ const operation_progress = (operation_name, callback) => {
         error: 'The operation with the given id does not exist'
       }, undefined)
     }
-    callback(undefined, {
-      done: body.done,
-      progress: body.metadata.progress,
-      operation_name: body.name      
-    })
+    if(body.result.code==400){
+      callback({error:body.result.message}, undefined)
+    }else{
+      callback(undefined, {
+        done: body.done,
+        progress: body.metadata.progress,
+        operation_name: body.name      
+      })
+    }    
   })
 }
 

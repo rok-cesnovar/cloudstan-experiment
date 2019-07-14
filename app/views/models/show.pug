@@ -64,6 +64,8 @@ block content
             h5#model_data Data input
           p.messages#data_messages 
           button.btn.btn-outline-primary.inactive(type="button", disabled, id="save_data") Save
+          p 
+          textarea#dataeditor(rows="5", name="code", placeholder='Write your model data here and run.')=model.data
   h4#model_run_title Fit the model
   .row
     .col-md-8
