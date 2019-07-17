@@ -1,4 +1,13 @@
 $(document).ready(function () {
+    function isValidJson(json) {
+        try {
+            JSON.parse(json);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    
     function slide_to(name,off){
         const offset = $("nav").height()+parseInt($("nav").css("padding-bottom"))+parseInt($("nav").css("padding-top"));
         $('html, body').animate({
@@ -83,12 +92,15 @@ $(document).ready(function () {
     });
 
     $("#save_model").click(() => {
+        var code = editor.getValue();
+        
         clear_flash_message();
         const model_id = $('input[name=model_id]').val();
         const _csrf = $('input[name=_csrf]').val();
-        var code = editor.getValue();
+        
         const params = { _csrf, code };
         $("input[name=compiled]").val(0);
+
         $.post("/models/"+model_id+"/code", params, (data) => {
             $("#discard_model_code_changes").hide();
             disable_button("save_model");
@@ -98,7 +110,7 @@ $(document).ready(function () {
         })
         .fail(function() {
             flash_message_model("danger", "Could not save the model code!");
-        })
+        })   
     });
 
     $("#compile_model").click(() => {
@@ -129,6 +141,8 @@ $(document).ready(function () {
                 disable_button("compile_model");
             }            
         })
+        
+
         .fail(function() {
             disable_button("save_model");
             disable_button("to_input");
@@ -191,19 +205,23 @@ $(document).ready(function () {
         })
     });
     $("#save_data").click(() => {
-        clear_flash_message();
-        const model_id = $('input[name=model_id]').val();
-        const _csrf = $('input[name=_csrf]').val();
         var dataVal = dataEditor.getValue();
-        const params = { _csrf, data: dataVal };
-        $.post("/models/"+model_id+"/data", params, (data) => {
-            disable_button("save_data");
-            enable_button("run_model");
-            flash_message_data("info", "The data was saved succesfully.");     
-        })
-        .fail(function() {
-            flash_message_data("danger", "Could not save the model data!");
-        })
+        if(isValidJson(dataVal)){
+            clear_flash_message();
+            const model_id = $('input[name=model_id]').val();
+            const _csrf = $('input[name=_csrf]').val();        
+            const params = { _csrf, data: dataVal };
+            $.post("/models/"+model_id+"/data", params, (data) => {
+                disable_button("save_data");
+                enable_button("run_model");
+                flash_message_data("info", "The data was saved succesfully.");     
+            })
+            .fail(function() {
+                flash_message_data("danger", "Could not save the model data!");
+            })
+        }else{
+            flash_message_data("danger", "The input data is not in a valid JSON format!");
+        }  
     });
 
 
