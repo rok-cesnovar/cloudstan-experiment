@@ -1,10 +1,20 @@
 ## My experiment on cloudstan
 
-This is just an experiment on cloudstan
+This is just an experiment on cloudstan I threw together in about 2 days time. Any suggestions, comments, issues, etc. are very welcome.
 
-This is built using [this](https://github.com/madhums/node-express-mongoose) boilerplate for Node, Express & Mongoose.
+This is built using 
+- [this boilerplate by Madhums](https://github.com/madhums/node-express-mongoose) for Node, Express & Mongoose that comes with solutions for log in, sessions, mongodb database, templating engine etc.
+- [Codemirror](https://codemirror.net/) for the code and data editors with syntax highlighting
+- [Chart.js](https://www.chartjs.org/) for charting
+- [d3.Array](https://github.com/d3/d3-array) for processing sampling arrays (the plan is to switch to [d3.js](https://d3js.org/) for all visualization and data processing on the users side)
+- [httpstan](https://github.com/stan-dev/httpstan) to compile and run Stan models
+
+
+(17.7.2019) The web app support logging in with your Github account but I switched it off for the time being as there were issues with the callback URL when migrating to Heroku.
 
 ## Usage
+
+Set the appropriate environment variables that are listed in .env.example and then run the following:
 
     git clone 
     cd 
